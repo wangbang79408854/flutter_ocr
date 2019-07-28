@@ -12,6 +12,9 @@ import com.baidu.ocr.sdk.model.GeneralBasicParams;
 import com.baidu.ocr.sdk.model.GeneralResult;
 import com.baidu.ocr.sdk.model.WordSimple;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.File;
 
 import io.flutter.plugin.common.MethodCall;
@@ -24,6 +27,9 @@ public class OcrDelegate implements PluginRegistry.ActivityResultListener {
 
     private final Activity activity;
 
+    private final int SUCCESS = 0;
+
+    private final int ERROR = -1;
 
 
     public OcrDelegate(Activity activity) {
@@ -50,15 +56,13 @@ public class OcrDelegate implements PluginRegistry.ActivityResultListener {
                 String accessToken = result.getAccessToken();
                 Log.d(OCRTag, "accesstoken=" + accessToken);
                 methodResult.success(accessToken);
-
-                return;
             }
 
             @Override
             public void onError(OCRError error) {
                 // 调用失败，返回OCRError子类SDKError对象
                 String message = error.getMessage();
-                Log.d("OCRTag","cause="+message+error.getErrorCode());
+                Log.d("OCRTag", "cause=" + message + error.getErrorCode());
                 methodResult.error("errorCode", "init 错误", error.getErrorCode());
                 return;
             }
@@ -80,30 +84,47 @@ public class OcrDelegate implements PluginRegistry.ActivityResultListener {
         param.setLanguageType(languageType);
         param.setDetectDirection(true);
         param.setImageFile(new File(filePath));
+        final OcrResult ocrResult = new OcrResult();
         // 调用通用文字识别服务
         OCR.getInstance(activity).recognizeGeneralBasic(param, new OnResultListener<GeneralResult>() {
             @Override
             public void onResult(final GeneralResult generalResult) {
-                // 调用成功，返回GeneralResult对象
-//                for (final WordSimple wordSimple : result.getWordList()) {
-//                    // wordSimple不包含位置信息
-//                    WordSimple word = wordSimple;
-//                    sb.append(word.getWords());
-//                    sb.append("\n");
-//                }
-                // json格式返回字符串
                 StringBuilder sb = new StringBuilder();
                 for (WordSimple WordSimple : generalResult.getWordList()) {
                     sb.append(WordSimple.getWords());
                     sb.append("\n");
                 }
-                result.success(sb.toString());
+                //创建JSONObject
+                try{
+                    JSONObject jsonObject = new JSONObject();
+                    //键值对赋值
+                    jsonObject.put("returnCode", SUCCESS);
+                    jsonObject.put("returnMsg", sb.toString());
+                    //转化成json字符串
+                    String json = jsonObject.toString();
+                    result.success(json);
+                }catch (JSONException e){
+                    result.error("json error","转换json错误",null);
+                }
+
             }
 
             @Override
             public void onError(OCRError error) {
-                // 调用失败，返回OCRError对象
-                result.error("OCRError", "errorCode=" + error.getErrorCode(), null);
+                //创建JSONObject
+                try{
+                    JSONObject jsonObject = new JSONObject();
+                    //键值对赋值
+                    jsonObject.put("returnCode", ERROR);
+                    jsonObject.put("returnMsg", "SDKERROR");
+                    jsonObject.put("errorCode", error.getErrorCode());
+                    jsonObject.put("errorMsg", error.getMessage());
+                    //转化成json字符串
+                    String json = jsonObject.toString();
+                    result.success(json);
+                }catch (JSONException e){
+                    result.error("json error","转换json错误",null);
+                }
             }
         });
     }
