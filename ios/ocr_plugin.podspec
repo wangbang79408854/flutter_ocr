@@ -16,19 +16,8 @@ A new Flutter plugin.
   s.public_header_files = 'Classes/**/*.h'
   s.dependency 'Flutter'
 
+  s.vendored_frameworks = 'lib-3.0.3/AipBase.framework', 'lib-3.0.3/AipOcrSdk.framework', 'lib-3.0.3/IdcardQuality.framework'
 
   s.ios.deployment_target = '8.0'
-
-  s.subspec 'AipBase' do |b|
-    b.vendored_frameworks ='Classes/AipBase.framework'
-  end
-  
-  s.subspec 'AipOcrSdk' do |s|
-    s.vendored_frameworks ='Classes/AipOcrSdk.framework'
-  end
-  
-  s.subspec 'IdcardQuality' do |i|
-    i.vendored_frameworks ='Classes/IdcardQuality.framework'
-  end
 end
 
