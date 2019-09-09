@@ -1,8 +1,8 @@
 name: ocr_plugin
 description: A new Flutter plugin.
-version: 0.0.1
-author:
-homepage:
+version: 0.0.7
+author: "novaapp <79408854@qq.com>"
+homepage: https://github.com/wangbang79408854/flutter_ocr
 
 environment:
   sdk: ">=2.1.0 <3.0.0"

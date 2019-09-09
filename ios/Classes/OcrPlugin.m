@@ -4,9 +4,9 @@
 @implementation OcrPlugin
 + (void)registerWithRegistrar:(NSObject<FlutterPluginRegistrar>*)registrar {
   FlutterMethodChannel* channel = [FlutterMethodChannel
-      methodChannelWithName:@"n_baidu_ocr_plugin"
+      methodChannelWithName:@"ocr_plugin"
             binaryMessenger:[registrar messenger]];
-  NBaiduOcrPlugin* instance = [[NBaiduOcrPlugin alloc] init];
+  OcrPlugin* instance = [[OcrPlugin alloc] init];
   [registrar addMethodCallDelegate:instance channel:channel];
 }
 
