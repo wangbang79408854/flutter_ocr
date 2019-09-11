@@ -38,7 +38,7 @@
           
           UIImage *image = [UIImage imageWithContentsOfFile:filePath];
           [[AipOcrService shardService] detectTextBasicFromImage:image withOptions:@{@"language_type": languageType, @"detect_direction": @"true"} successHandler:^(id recognizeResult) {
-              NSLog(@"[NBaiDuOcrPlugin] success: %@", recognizeResult);
+              NSLog(@"[OcrPlugin] success: %@", recognizeResult);
               NSDictionary *successDic = @{
                                            @"returnCode": @(0),
                                            @"returnMsg": [self getRecognizeStringFromResultObj:recognizeResult]
@@ -50,7 +50,7 @@
                   result(jsonStr);
               });
           } failHandler:^(NSError *err) {
-              NSLog(@"[NBaiDuOcrPlugin] error: %@", err);
+              NSLog(@"[OcrPlugin] error: %@", err);
               NSDictionary *successDic = @{
                                            @"errorCode": @([err code]),
                                            @"errorMsg": [err localizedDescription]
