@@ -24,6 +24,18 @@ class OcrPlugin {
     };
     return await _channel.invokeMethod("recognize", params);
   }
+
+  static Future<String> recognizeAccurate(String filepath, String languageType) async {
+    print("OCRplugin filepath=$filepath,languageType = $languageType");
+    Map<String, String> params = {
+      'filePath': filepath,
+      'languageType': languageType
+    };
+    return await _channel.invokeMethod("recognizeAccurate", params);
+  }
+
+
+
 }
 
 class OcrResult {
@@ -32,5 +44,4 @@ class OcrResult {
   int errorCode; //当returnCode = -1 时，返回SDK错误码
   String errorMsg; //返回SDK错误信息
 
-  
 }

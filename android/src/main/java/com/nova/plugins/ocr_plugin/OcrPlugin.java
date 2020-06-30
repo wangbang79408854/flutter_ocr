@@ -17,6 +17,7 @@ public class OcrPlugin implements MethodCallHandler {
 
     private static final String Init = "initOcrSdk";
     private static final String Recognize = "recognize";
+    private static final String RecognizeAccurate = "recognizeAccurate";
 
     /**
      * Plugin registration.
@@ -48,7 +49,6 @@ public class OcrPlugin implements MethodCallHandler {
             return;
         }
 
-
         MethodChannel.Result result = new MethodResultWrapper(originResult);
 
         switch (call.method) {
@@ -58,7 +58,9 @@ public class OcrPlugin implements MethodCallHandler {
             case Recognize:
                 delegate.recognize(call,result);
                 break;
-
+            case RecognizeAccurate:
+                delegate.recognizeAccurate(call,result);
+                break;
             default:
                 throw new IllegalArgumentException("Unkown operation" + call.method);
 

@@ -95,7 +95,7 @@ public class OcrDelegate implements PluginRegistry.ActivityResultListener {
                     sb.append("\n");
                 }
                 //创建JSONObject
-                try{
+                try {
                     JSONObject jsonObject = new JSONObject();
                     //键值对赋值
                     jsonObject.put("returnCode", SUCCESS);
@@ -103,8 +103,8 @@ public class OcrDelegate implements PluginRegistry.ActivityResultListener {
                     //转化成json字符串
                     String json = jsonObject.toString();
                     result.success(json);
-                }catch (JSONException e){
-                    result.error("json error","转换json错误",null);
+                } catch (JSONException e) {
+                    result.error("json error", "转换json错误", null);
                 }
 
             }
@@ -112,7 +112,7 @@ public class OcrDelegate implements PluginRegistry.ActivityResultListener {
             @Override
             public void onError(OCRError error) {
                 //创建JSONObject
-                try{
+                try {
                     JSONObject jsonObject = new JSONObject();
                     //键值对赋值
                     jsonObject.put("returnCode", ERROR);
@@ -122,11 +122,72 @@ public class OcrDelegate implements PluginRegistry.ActivityResultListener {
                     //转化成json字符串
                     String json = jsonObject.toString();
                     result.success(json);
-                }catch (JSONException e){
-                    result.error("json error","转换json错误",null);
+                } catch (JSONException e) {
+                    result.error("json error", "转换json错误", null);
                 }
             }
         });
+    }
+
+    public void recognizeAccurate(final MethodCall call, final MethodChannel.Result result) {
+        // 通用文字识别参数设置
+        String filePath = call.argument("filePath");
+        String languageType = call.argument("languagetype");
+        if (filePath == null) {
+            result.error("filepath", "filepath ==null", 0);
+            return;
+        }
+//        CHN_ENG、ENG、POR、FRE、GER、ITA、SPA、RUS、JAP
+        GeneralBasicParams param = new GeneralBasicParams();
+        param.setDetectDirection(true);
+        param.setLanguageType(languageType);
+        param.setDetectDirection(true);
+        param.setImageFile(new File(filePath));
+        final OcrResult ocrResult = new OcrResult();
+        // 调用通用文字识别服务
+
+        OCR.getInstance(activity).recognizeAccurateBasic(param, new OnResultListener<GeneralResult>() {
+            @Override
+            public void onResult(GeneralResult generalResult) {
+                StringBuilder sb = new StringBuilder();
+                for (WordSimple WordSimple : generalResult.getWordList()) {
+                    sb.append(WordSimple.getWords());
+                    sb.append("\n");
+                }
+                //创建JSONObject
+                try {
+                    JSONObject jsonObject = new JSONObject();
+                    //键值对赋值
+                    jsonObject.put("returnCode", SUCCESS);
+                    jsonObject.put("returnMsg", sb.toString());
+                    //转化成json字符串
+                    String json = jsonObject.toString();
+                    result.success(json);
+                } catch (JSONException e) {
+                    result.error("json error", "转换json错误", null);
+                }
+
+            }
+
+            @Override
+            public void onError(OCRError error) {
+                try {
+                    JSONObject jsonObject = new JSONObject();
+                    //键值对赋值
+                    jsonObject.put("returnCode", ERROR);
+                    jsonObject.put("returnMsg", "SDKERROR");
+                    jsonObject.put("errorCode", error.getErrorCode());
+                    jsonObject.put("errorMsg", error.getMessage());
+                    //转化成json字符串
+                    String json = jsonObject.toString();
+                    result.success(json);
+                } catch (JSONException e) {
+                    result.error("json error", "转换json错误", null);
+                }
+            }
+        });
+
+
     }
 
 

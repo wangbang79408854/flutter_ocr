@@ -70,7 +70,7 @@ class _MyAppState extends State<MyApp> {
   Future<void> initOcrSdk() async {
     print("initOcrSDK");
     String result = await OcrPlugin.initOcrSdk(
-        "FrvgGdKLgGMpvGfzfuabYwWl", "w3m3vFLXfAXkRcV8T2YQCQE0ExiyliGq");
+        "jR4owkbk1Q4hAcP55ZbP5DhU", "re3lGQ7qA2Pbe0086Dh4YZAG89EzXfAR");
     print("flutter_ocr_token=$result");
 
 
@@ -88,7 +88,7 @@ class _MyAppState extends State<MyApp> {
     print("filepath = $filepath");
     var languageType = "CHN_ENG";
 
-    String result = await OcrPlugin.recognize(filepath, languageType);
+    String result = await OcrPlugin.recognizeAccurate(filepath, languageType);
     print("$result");
 
     var decode = json.decode(result);
